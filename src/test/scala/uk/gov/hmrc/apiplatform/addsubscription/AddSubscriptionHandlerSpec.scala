@@ -87,21 +87,23 @@ class AddSubscriptionHandlerSpec extends WordSpecLike with MockitoSugar with Mat
       capturedPatchRequest.value() shouldEqual expectedApiStageName
     }
 
-    "return if Application name is not recognised" in new UnknownApplication {
+    "throw exception if Application name is not recognised" in new UnknownApplication {
       val sqsEvent = new SQSEvent()
       sqsEvent.setRecords(List(buildAddSubscriptionMessage(applicationName, apiName)))
 
-      addSubscriptionHandler.handleInput(sqsEvent, mockContext)
+      val exception: Exception = intercept[Exception](addSubscriptionHandler.handleInput(sqsEvent, mockContext))
 
+      exception shouldBe a[NotFoundException]
       verify(mockAPIGatewayClient, times(0)).updateUsagePlan(any[UpdateUsagePlanRequest])
     }
 
-    "return if API name is not recognised" in new UnknownAPI {
+    "throw exception if API name is not recognised" in new UnknownAPI {
       val sqsEvent = new SQSEvent()
       sqsEvent.setRecords(List(buildAddSubscriptionMessage(applicationName, apiName)))
 
-      addSubscriptionHandler.handleInput(sqsEvent, mockContext)
+      val exception: Exception = intercept[Exception](addSubscriptionHandler.handleInput(sqsEvent, mockContext))
 
+      exception shouldBe a[NotFoundException]
       verify(mockAPIGatewayClient, times(0)).updateUsagePlan(any[UpdateUsagePlanRequest])
     }
 

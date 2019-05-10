@@ -3,7 +3,7 @@ package uk.gov.hmrc.apiplatform.addsubscription
 import com.amazonaws.services.lambda.runtime.{Context, LambdaLogger}
 import com.amazonaws.services.lambda.runtime.events.SQSEvent
 import software.amazon.awssdk.services.apigateway.ApiGatewayClient
-import software.amazon.awssdk.services.apigateway.model.{Op, PatchOperation, UpdateUsagePlanRequest}
+import software.amazon.awssdk.services.apigateway.model.{NotFoundException, Op, PatchOperation, UpdateUsagePlanRequest}
 import uk.gov.hmrc.api_platform_manage_api.AwsApiGatewayClient.awsApiGatewayClient
 import uk.gov.hmrc.api_platform_manage_api.AwsIdRetriever
 import uk.gov.hmrc.aws_gateway_proxied_request_lambda.SqsHandler
@@ -31,7 +31,7 @@ class AddSubscriptionHandler(override val apiGatewayClient: ApiGatewayClient, en
 
     identifiers match {
       case Some(ids) => updateSubscription(ids._1, ids._2)
-      case None => logger.log("Unable to subscribe Application to API")
+      case None => throw NotFoundException.builder().message("Unable to subscribe Application to API").build()
     }
   }
 
