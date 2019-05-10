@@ -31,7 +31,10 @@ class AddSubscriptionHandler(override val apiGatewayClient: ApiGatewayClient, en
 
     identifiers match {
       case Some(ids) => updateSubscription(ids._1, ids._2)
-      case None => throw NotFoundException.builder().message("Unable to subscribe Application to API").build()
+      case None =>
+        throw NotFoundException.builder()
+          .message(s"Unable to subscribe Application [${addSubscriptionRequest.applicationName}] to API [${addSubscriptionRequest.apiName}]")
+          .build()
     }
   }
 
