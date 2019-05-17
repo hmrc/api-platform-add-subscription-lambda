@@ -26,7 +26,7 @@ class AddSubscriptionHandler(override val apiGatewayClient: ApiGatewayClient, en
 
     val identifiers: Option[(String, String)] = for {
       usagePlanId <- getAwsUsagePlanIdByApplicationName (addSubscriptionRequest.applicationName)
-      restApiId <- getAwsRestApiIdByApiName(addSubscriptionRequest.apiName)
+      restApiId <- getAwsRestApiIdByApiName(addSubscriptionRequest.apiName, logger)
     } yield (usagePlanId, restApiId)
 
     identifiers match {
